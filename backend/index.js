@@ -3,11 +3,13 @@ import { app, server } from "./socket/socket.js";
 import connectDb from "./config/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import authRouter from "./routes/auth.routes.js";
 
 dotenv.config();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/api/auth", authRouter);
 
 app.use(cors({
   origin: "http://localhost:5173",
