@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import { useSelector } from "react-redux";
 import SignUp from "./pages/SignUp";
+import getCurrentUser from "./customHooks/getCurrentUser";
 function App() {
+  getCurrentUser();
   const { userData } = useSelector((state) => state.user);
 
   return (
