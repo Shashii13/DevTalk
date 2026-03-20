@@ -14,3 +14,16 @@ Redux Toolkit is used to manage:
 - User authentication state
 - Messages
 - Online users
+
+## 🗄 Database
+
+MongoDB is used to store:
+- User data
+- Messages
+- Conversations
+
+## 🔐 Authentication
+
+- Password hashing using bcrypt
+- JWT-based authentication
+- Secure cookie storage
