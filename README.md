@@ -32,3 +32,19 @@ MongoDB is used to store:
 - POST /api/auth/signup
 - POST /api/auth/login
 - GET /api/auth/logout
+
+## 🔐 Login Flow
+
+- User enters email & password
+- Backend validates credentials
+- JWT token stored in cookies
+- User redirected to home page
+## 🧾 Signup Flow
+
+- User registers with username, email & password
+- Password is hashed before storing
+- JWT token issued on successful signup
+- Redirect to profile setup
+## 👤 User API
+
+- GET /api/user/current → fetch logged-in user
