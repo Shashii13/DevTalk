@@ -48,3 +48,7 @@ MongoDB is used to store:
 ## 👤 User API
 
 - GET /api/user/current → fetch logged-in user
+## 🔄 Session Handling
+
+- Automatically fetch logged-in user on app load
+- Maintains session using cookies
