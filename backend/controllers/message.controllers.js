@@ -44,3 +44,17 @@ export const sendMessage = async (req, res) => {
     return res.status(500).json({ message: `send message error ${error}` });
   }
 };
+export const getMessages = async (req, res) => {
+  try {
+    const sender = req.userId;
+    const { receiver } = req.params;
+
+    const conversation = await Conversation.findOne({
+      partcipants: { $all: [sender, receiver] },
+    }).populate("messages");
+
+    return res.status(200).json(conversation?.messages || []);
+  } catch (error) {
+    return res.status(500).json({ message: `get message error ${error}` });
+  }
+};
