@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { serverUrl } from "../main";
 import { useSelector } from "react-redux";
+import { socket } from "../socket";
 
 function Chat() {
   const { selectedUser, userData } = useSelector((state) => state.user);
@@ -9,7 +10,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
-  // fetch messages
+  // 🔹 Fetch messages
   useEffect(() => {
     const fetchMessages = async () => {
       if (!selectedUser) return;
@@ -28,7 +29,26 @@ function Chat() {
     fetchMessages();
   }, [selectedUser]);
 
-  // send message
+  // 🔥 Real-time listener
+  useEffect(() => {
+    if (!selectedUser) return;
+
+    socket.on("newMessage", (newMsg) => {
+      // only add message if it's from selected chat
+      if (
+        newMsg.sender === selectedUser._id ||
+        newMsg.receiver === selectedUser._id
+      ) {
+        setMessages((prev) => [...prev, newMsg]);
+      }
+    });
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [selectedUser]);
+
+  // 🔹 Send message
   const handleSend = async () => {
     if (!text.trim()) return;
 
@@ -56,7 +76,7 @@ function Chat() {
 
   return (
     <div className="flex-1 flex flex-col h-screen">
-
+      
       {/* Header */}
       <div className="p-4 border-b font-semibold">
         {selectedUser.name || selectedUser.userName}
@@ -74,6 +94,7 @@ function Chat() {
             }`}
           >
             {msg.message}
+
             {msg.image && (
               <img
                 src={msg.image}
