@@ -14,3 +14,16 @@ export const getCurrentUser = async (req, res) => {
     return res.status(500).json({ message: `current user error ${error}` });
   }
 };
+
+// GET OTHER USERS
+export const getOtherUsers = async (req, res) => {
+  try {
+    const users = await User.find({
+      _id: { $ne: req.userId } // exclude current user
+    }).select("-password");
+
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ message: `get other users error ${error}` });
+  }
+};
