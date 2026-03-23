@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import SignUp from "./pages/SignUp";
 import getCurrentUser from "./customHooks/getCurrentUser";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 function App() {
   getCurrentUser();
   const { userData } = useSelector((state) => state.user);
@@ -27,6 +28,10 @@ import Home from "./pages/Home";
 <Route
   path="/"
   element={userData ? <Home /> : <Navigate to="/login" />}
+/>
+<Route
+  path="/profile"
+  element={userData ? <Profile /> : <Navigate to="/login" />}
 />
     </Routes>
     
