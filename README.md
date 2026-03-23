@@ -75,3 +75,21 @@ MongoDB is used to store:
 - Loading indicators for better UX
 - Improved empty states
 - Smooth transitions and interactions
+
+## 🚀 Deployment
+
+This project can be deployed using:
+
+### Backend
+- Node.js + Express server
+- Can be deployed on Render / Railway
+
+### Frontend
+- React (Vite)
+- Can be deployed on Vercel / Netlify
+
+### Features Ready for Production
+- JWT Authentication
+- Real-time chat (Socket.io)
+- Image upload (Cloudinary)
+- Persistent login with cookies
