@@ -52,3 +52,26 @@ MongoDB is used to store:
 
 - Automatically fetch logged-in user on app load
 - Maintains session using cookies
+
+
+
+
+
+## 💬 Chat Feature
+
+- Send & receive messages
+- Display chat history
+- Supports text and image messages
+
+## 👤 Profile
+
+- Update name and profile image
+- Image uploaded using Cloudinary
+- Real-time UI update after changes
+
+## ✨ UI Improvements
+
+- Auto-scroll to latest messages
+- Loading indicators for better UX
+- Improved empty states
+- Smooth transitions and interactions
