@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { serverUrl } from "../main";
 import { useSelector } from "react-redux";
@@ -9,11 +9,17 @@ function Chat() {
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+
+  const messagesEndRef = useRef(null);
 
   // 🔹 Fetch messages
   useEffect(() => {
     const fetchMessages = async () => {
       if (!selectedUser) return;
+
+      setLoading(true);
 
       try {
         const res = await axios.get(
@@ -23,6 +29,8 @@ function Chat() {
         setMessages(res.data);
       } catch (error) {
         console.log("error fetching messages");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -34,7 +42,6 @@ function Chat() {
     if (!selectedUser) return;
 
     socket.on("newMessage", (newMsg) => {
-      // only add message if it's from selected chat
       if (
         newMsg.sender === selectedUser._id ||
         newMsg.receiver === selectedUser._id
@@ -48,9 +55,16 @@ function Chat() {
     };
   }, [selectedUser]);
 
+  // ✅ Auto scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   // 🔹 Send message
   const handleSend = async () => {
     if (!text.trim()) return;
+
+    setSending(true);
 
     try {
       const res = await axios.post(
@@ -63,9 +77,12 @@ function Chat() {
       setText("");
     } catch (error) {
       console.log("error sending message");
+    } finally {
+      setSending(false);
     }
   };
 
+  // 🔸 No user selected
   if (!selectedUser) {
     return (
       <div className="flex-1 flex items-center justify-center text-gray-500">
@@ -76,7 +93,7 @@ function Chat() {
 
   return (
     <div className="flex-1 flex flex-col h-screen">
-      
+
       {/* Header */}
       <div className="p-4 border-b font-semibold">
         {selectedUser.name || selectedUser.userName}
@@ -84,26 +101,44 @@ function Chat() {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-        {messages.map((msg) => (
-          <div
-            key={msg._id}
-            className={`max-w-[60%] p-2 rounded ${
-              msg.sender === userData._id
-                ? "bg-blue-500 text-white self-end"
-                : "bg-gray-200 self-start"
-            }`}
-          >
-            {msg.message}
 
-            {msg.image && (
-              <img
-                src={msg.image}
-                alt="img"
-                className="mt-2 rounded"
-              />
+        {loading ? (
+          <p className="text-center text-gray-500">
+            Loading messages...
+          </p>
+        ) : (
+          <>
+            {!messages.length && (
+              <p className="text-center text-gray-400">
+                No messages yet. Start conversation 👋
+              </p>
             )}
-          </div>
-        ))}
+
+            {messages.map((msg) => (
+              <div
+                key={msg._id}
+                className={`max-w-[60%] p-2 rounded ${
+                  msg.sender === userData._id
+                    ? "bg-blue-500 text-white self-end"
+                    : "bg-gray-200 self-start"
+                }`}
+              >
+                {msg.message}
+
+                {msg.image && (
+                  <img
+                    src={msg.image}
+                    alt="img"
+                    className="mt-2 rounded"
+                  />
+                )}
+              </div>
+            ))}
+
+            <div ref={messagesEndRef} />
+          </>
+        )}
+
       </div>
 
       {/* Input */}
@@ -118,11 +153,15 @@ function Chat() {
 
         <button
           onClick={handleSend}
-          className="bg-blue-500 text-white px-4 rounded"
+          disabled={sending}
+          className={`px-4 rounded text-white ${
+            sending ? "bg-gray-400" : "bg-blue-500"
+          }`}
         >
-          Send
+          {sending ? "Sending..." : "Send"}
         </button>
       </div>
+
     </div>
   );
 }
